@@ -18,12 +18,36 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Entity Value', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Entity Value', ['create?entity='.$entity['code']], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?= GridView::widget([
+    <table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <?php foreach($fields as $field): ?>
+                <th>
+                    <?= $field['name'] ?>
+                </th>
+            <?php endforeach; ?>
+       
+        <th class="action-column">&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($data as $item): ?>
+            <tr data-key="1">
+                <?php foreach($fields as $field): ?>
+                    <td><?= isset($item[$field['name']]) ? $item[$field['name']] : '' ?></td>
+                <?php endforeach; ?>
+                <td> actions</td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+    </table>
+
+    <!-- <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
@@ -32,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'id_account',
             'id_entity_field',
-            'id_group',
+            'id_entity_value_group',
             'value:ntext',
             [
                 'class' => ActionColumn::className(),
@@ -41,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                  }
             ],
         ],
-    ]); ?>
+    ]); ?> -->
 
 
 </div>

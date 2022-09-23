@@ -18,7 +18,7 @@ class EntityValueSearch extends EntityValue
     {
         return [
             [['id', 'id_account', 'id_entity_field'], 'integer'],
-            [['id_group', 'value'], 'safe'],
+            [['id_entity_value_group', 'value'], 'safe'],
         ];
     }
 
@@ -63,7 +63,7 @@ class EntityValueSearch extends EntityValue
             'id_entity_field' => $this->id_entity_field,
         ]);
 
-        $query->andFilterWhere(['like', 'id_group', $this->id_group])
+        $query->andFilterWhere(['like', 'id_entity_value_group', $this->id_entity_value_group])
             ->andFilterWhere(['like', 'value', $this->value]);
 
         return $dataProvider;

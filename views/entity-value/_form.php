@@ -12,13 +12,14 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id_account')->textInput() ?>
+    <?php foreach($fields as $field): ?>
+        <div class="form-group field-entityvalue-id_account has-success">
+            <label class="control-label" for="entityvalue-id_account"><?= $field['name'] ?></label>
+            <input type="text" class="form-control" name="<?= $field['id'] ?>">
 
-    <?= $form->field($model, 'id_entity_field')->textInput() ?>
-
-    <?= $form->field($model, 'id_group')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'value')->textarea(['rows' => 6]) ?>
+            <div class="help-block"></div>
+        </div>
+    <?php endforeach; ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'id_account',
             'id_entity_field',
-            'id_group',
+            'id_entity_value_group',
             'value:ntext',
         ],
     ]) ?>

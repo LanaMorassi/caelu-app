@@ -10,7 +10,8 @@ use Yii;
  * @property int $id
  * @property int|null $id_account
  * @property int|null $id_entity_field
- * @property string|null $id_group
+ * @property int|null $id_entity_value_group
+ * @property int|null $id_entity
  * @property string|null $value
  */
 class EntityValue extends \yii\db\ActiveRecord
@@ -30,8 +31,7 @@ class EntityValue extends \yii\db\ActiveRecord
     {
         return [
             [['id_account', 'id_entity_field'], 'integer'],
-            [['value'], 'string'],
-            [['id_group'], 'string', 'max' => 24],
+            [['value'], 'string']
         ];
     }
 
@@ -44,7 +44,8 @@ class EntityValue extends \yii\db\ActiveRecord
             'id' => 'ID',
             'id_account' => 'Id Account',
             'id_entity_field' => 'Id Entity Field',
-            'id_group' => 'Id Group',
+            'id_entity_value_group' => 'Id Group',
+            'id_entity' => 'Id Entity',
             'value' => 'Value',
         ];
     }

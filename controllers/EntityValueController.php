@@ -6,6 +6,7 @@ use app\models\EntityValue;
 use app\models\EntityValueSearch;
 use app\models\JourneyFlow;
 use app\models\JourneyFlowGroup;
+use app\models\EntityValueGroup;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -45,7 +46,49 @@ class EntityValueController extends Controller
         $searchModel = new EntityValueSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        $entity = (new \yii\db\Query())
+        ->select(['*'])
+        ->from('entity')
+        ->where([
+            'code' => ($this->request->get('entity')),
+            'id_account' => (\Yii::$app->user->id)
+            ])
+        ->one();
+    
+        $entityFields = (new \yii\db\Query())
+        ->select(['*'])
+        ->from('entity_field')
+        ->where(['id_entity' => $entity['id']])
+        ->all();
+
+        $countEntityFields = sizeof($entityFields);
+
+        $entityValues = (new \yii\db\Query())
+            ->select(['*'])
+            ->from('entity_value_group')
+            ->innerJoin('entity_value', 'entity_value.id_entity_value_group = entity_value_group.id')
+            ->where([
+                'entity_value.id_account' => (\Yii::$app->user->id),
+                'entity_value.id_entity' => $entity['id']
+                ])
+            ->limit(10*$countEntityFields)
+            ->all();
+
+      
+        $data = [];
+        foreach($entityValues as $entityValue){
+            $groupValue = [];
+            foreach($entityFields as $entityField){
+                if($entityValue['id_entity_field'] == $entityField['id']){
+                    $data[$entityValue['id_entity_value_group']][$entityField['name']]= $entityValue['value'];
+                }
+            }
+        }
+
         return $this->render('index', [
+            'entity' => $entity,
+            'data' => $data,
+            'fields' => $entityFields,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -71,19 +114,48 @@ class EntityValueController extends Controller
      */
     public function actionCreate()
     {
-        $model = new EntityValue();
-        $model->id_account = \Yii::$app->user->id;
+        $entity = (new \yii\db\Query())
+        ->select(['*'])
+        ->from('entity')
+        ->where(['code' => ($this->request->get('entity'))])
+        ->one();
+
+    
+        $entityFields = (new \yii\db\Query())
+        ->select(['*'])
+        ->from('entity_field')
+        ->where(['id_entity' => $entity['id']])
+        ->all();
+
+        // $model = new EntityValue();
+        // $model->id_account = \Yii::$app->user->id;
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            $entityValueGroup = new EntityValueGroup();
+            $entityValueGroup->save();
+
+            foreach($this->request->post() as $key => $item){
+                if($key != '_csrf'){
+                    $entityValue = new EntityValue();
+                    $entityValue->id_account = \Yii::$app->user->id;
+                    $entityValue->id_entity_field = $key;
+                    $entityValue->id_entity_value_group = $entityValueGroup->id;
+                    $entityValue->id_entity = $entity['id'];
+                    $entityValue->value = $item;
+                    if(!$entityValue->save()){
+                        //todo inserir erro
+                    }
+                }
             }
-        } else {
-            $model->loadDefaultValues();
+         
+            return $this->redirect(['index', 'entity' => $entity['code']]);
+
         }
 
+
         return $this->render('create', [
-            'model' => $model,
+            'fields' => $entityFields,
+          //  'model' => $model,
         ]);
     }
 

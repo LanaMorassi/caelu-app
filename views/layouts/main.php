@@ -31,6 +31,35 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '@w
 
 <header id="header">
     <?php
+
+    $menuItems = [
+        ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => 'About', 'url' => ['/site/about']],
+        ['label' => 'entity', 'url' => ['/entity/index']],
+        ['label' => 'entityField', 'url' => ['/entity-field/index']],
+        ['label' => 'Contact', 'url' => ['/site/contact']],
+        Yii::$app->user->isGuest
+            ? ['label' => 'Login', 'url' => ['/site/login']]
+            : '<li class="nav-item">'
+                . Html::beginForm(['/site/logout'])
+                . Html::submitButton(
+                    'Logout (' . Yii::$app->user->identity->username . ')',
+                    ['class' => 'nav-link btn btn-link logout']
+                )
+                . Html::endForm()
+                . '</li>'
+                ];
+    $entities = (new \yii\db\Query())
+    ->select(['*'])
+    ->from('entity')
+    ->where(['id_account' => (\Yii::$app->user->id)])
+    ->all();
+
+    foreach($entities as $entity){
+        $menuItems[] = ['label' => $entity['name'], 'url' => ['entity-value/index?entity='.$entity['code']]];
+        //$ar[] = ['label' => $entity['name'], 'url' => ['entity-value/index?entity='.$entity['code']]];
+    }
+
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
@@ -38,24 +67,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '@w
     ]);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'entity', 'url' => ['/entity/index']],
-            ['label' => 'entityField', 'url' => ['/entity-field/index']],
-            ['label' => 'entityValue', 'url' => ['/entity-value/index']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/site/login']]
-                : '<li class="nav-item">'
-                    . Html::beginForm(['/site/logout'])
-                    . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->username . ')',
-                        ['class' => 'nav-link btn btn-link logout']
-                    )
-                    . Html::endForm()
-                    . '</li>'
-        ]
+        'items' => $menuItems
     ]);
     NavBar::end();
     ?>
