@@ -4,9 +4,13 @@ namespace app\controllers;
 
 use app\models\EntityValue;
 use app\models\EntityValueSearch;
+use app\models\JourneyFlow;
+use app\models\JourneyFlowGroup;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\base\ErrorException;
+
 
 /**
  * EntityValueController implements the CRUD actions for EntityValue model.
@@ -95,9 +99,9 @@ class EntityValueController extends Controller
         $model = $this->findModel($id);
         $model->id_account = \Yii::$app->user->id;
 
-
-        //check trigger
-        
+        if ($this->request->isPost){
+            $this->triggerJourneyChangeValue($model->id_entity_field, $model->value, $this->request->post()['EntityValue']['value']);
+        }
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -138,8 +142,54 @@ class EntityValueController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    private function triggerJourneyChangeValue(){
-    
+    private function triggerJourneyChangeValue($idEntityField, $valueEntity, $changeValueEntity){
+       
+        try{
+            $field_name = (new \yii\db\Query())
+            ->select(['*'])
+            ->from('entity_field')
+            ->where(['id' =>  ($idEntityField)])
+            ->one()['name'];
+
+            
+            $journeys = (new \yii\db\Query())
+            ->select(['*'])
+            ->from('journey')
+            ->where(['like', 'trigger_condition_value', $field_name])
+            ->all();
+        
+            if($journeys){
+                foreach($journeys as $journey){
+                    if($journey['trigger_condition'] == '!=' && $changeValueEntity != $valueEntity){
+                        
+                        $journeyFlowTemplate = (new \yii\db\Query())
+                        ->select(['*'])
+                        ->from('journey_flow_template')
+                        ->where(['id_journey' =>  ($journey['id'])])
+                        ->all();
+                        
+                        $journeyFlowGroup = new JourneyFlowGroup();
+                        $journeyFlowGroup->save();
+
+                        foreach($journeyFlowTemplate as $item){
+                        
+                            $journeyFlow = new JourneyFlow();
+                            $journeyFlow->id_journey = $item['id'];
+                            $journeyFlow->id_journey_action = $item['id_journey_action'];
+                            $journeyFlow->id_journey_flow_group = $journeyFlowGroup['id'];
+                            $journeyFlow->dh_created = date('Y-m-d H:i:s');
+                            $journeyFlow->flg_exec = 'N';
+                            $journeyFlow->flg_first = $item['flg_first'];
+                            $journeyFlow->positive_journey_template = $item['positive_journey_template'];
+                            $journeyFlow->negative_journey_template = $item['negative_journey_template'];
+                            $journeyFlow->save();
+                        }
+                    }
+                }
+            }
+        } catch (ErrorException $e) {
+            Yii::debug('Failed process trigger'. $e);
+        }
     }
 
 }
