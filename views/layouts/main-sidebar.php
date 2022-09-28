@@ -38,7 +38,6 @@ $entities = (new \yii\db\Query())
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <li><a href="/entity"><i class="fa fa-book"></i> <span>Entity</span></a></li>
-        <li><a href="/entity-field"><i class="fa fa-book"></i> <span>Entity Fields</span></a></li>
 
         <?php foreach($entities as $entity): ?>
           <li><a href="/entity-value/index?entity=<?= $entity['code'] ?>"><i class="fa fa-book"></i> <span><?=  $entity['name'] ?></span></a></li>

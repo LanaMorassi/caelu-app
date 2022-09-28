@@ -13,34 +13,54 @@ use yii\grid\GridView;
 $this->title = 'Entities';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="entity-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Entity', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    Segmentação
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+    <li class="active"><?= Html::encode($this->title) ?></li>
+  </ol>
+</section>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
+          <div class="box-tools">
+            <button class="btn btn-success">+ Novo</button>
+          </div>
+        </div>
 
-            'id',
-            'id_account',
-            'name',
-            'code',
-            [
+        <div class="box-body">
+          <?= GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => [
+              ['class' => 'yii\grid\SerialColumn'],
+              'name',
+              'code',
+              [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Entity $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                  return Url::toRoute([$action, 'id' => $model->id]);
+                }
+              ],
             ],
-        ],
-    ]); ?>
+          ]); ?>
+        </div>
 
+      </div>
 
-</div>
+    </div>
+  </div>
+
+</section>
+<!-- /.content -->

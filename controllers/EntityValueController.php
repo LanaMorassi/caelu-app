@@ -58,7 +58,10 @@ class EntityValueController extends Controller
         $entityFields = (new \yii\db\Query())
         ->select(['*'])
         ->from('entity_field')
-        ->where(['id_entity' => $entity['id']])
+        ->where([
+            'id_account' => (\Yii::$app->user->id),
+            'id_entity' => $entity['id']
+            ])
         ->all();
 
         $countEntityFields = sizeof($entityFields);
@@ -117,7 +120,10 @@ class EntityValueController extends Controller
         $entity = (new \yii\db\Query())
         ->select(['*'])
         ->from('entity')
-        ->where(['code' => ($this->request->get('entity'))])
+        ->where([
+            'id_account' => (\Yii::$app->user->id),
+            'code' => ($this->request->get('entity'))
+            ])
         ->one();
 
     
@@ -260,7 +266,7 @@ class EntityValueController extends Controller
                 }
             }
         } catch (ErrorException $e) {
-            Yii::debug('Failed process trigger'. $e);
+            \Yii::debug('Failed process trigger'. $e);
         }
     }
 

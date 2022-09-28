@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Entity;
+use app\models\EntityField;
 use app\models\EntitySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -104,15 +105,27 @@ class EntityController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = new EntityField();//$this->findModel($id);
         $model->id_account = \Yii::$app->user->id;
+        $model->id_entity = $id;
+
+        $entityFields = (new \yii\db\Query())
+        ->select(['entity_field_type.name tipo_campo', 'entity_field.display_name', 'entity_field.id'])
+        ->from('entity_field')
+        ->innerJoin('entity_field_type', 'entity_field_type.id = entity_field.id_entity_field_type')
+        ->where([
+            'id_account' => (\Yii::$app->user->id),
+            'id_entity' => $id
+            ])
+        ->all();
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['update', 'id' => $id]);
         }
 
         return $this->render('update', [
             'model' => $model,
+            'entityFields' => $entityFields
         ]);
     }
 

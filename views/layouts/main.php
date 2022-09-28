@@ -15,7 +15,7 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="/dist/css/AdminLTE.min.css">
   <!-- Custom style -->
-  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/dist/css/site.css">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="/dist/css/skins/_all-skins.min.css">
@@ -44,25 +44,7 @@
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <!-- <section class="content-header">
-      <h1>
-        Dashboard
-        <small>Control panel</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Dashboard</li>
-      </ol>
-    </section> -->
-
-    <!-- Main content -->
-    <section class="content">
-        <div class="container box">
-            <?= $content ?>
-        </div>
-    </section>
-    <!-- /.content -->
+    <?= $content ?>
   </div>
   <!-- /.content-wrapper -->
 
@@ -116,5 +98,7 @@
 <script src="/dist/js/pages/dashboard.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="/dist/js/demo.js"></script>
+<!-- Custom JS -->
+<script src="/dist/js/site.js"></script>
 </body>
 </html>

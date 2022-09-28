@@ -22,10 +22,8 @@ class EntityFieldController extends Controller
             parent::behaviors(),
             [
                 'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+                    'class' => VerbFilter::className()
+                    
                 ],
             ]
         );
@@ -115,7 +113,7 @@ class EntityFieldController extends Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(\Yii::$app->request->referrer);
     }
 
     /**

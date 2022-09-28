@@ -1,3 +1,11 @@
+.sidebar-collapse .default-img-profile {
+    margin-left: 0px;
+    margin-top: 0px;
+    height: 30px;
+    width: 30px;
+    padding: 3px;
+}
+
 .default-img-profile {
     background-color: white;
     padding: 7px;
