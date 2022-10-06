@@ -9,12 +9,23 @@ $this->title = 'Create Entity';
 $this->params['breadcrumbs'][] = ['label' => 'Entities', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="entity-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Segmentação
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active"><?= Html::encode($this->title) ?></li>
+    </ol>
+</section>
 
-    <?= $this->render('_form', [
+
+<!-- Main content -->
+<section class="content">
+    <?= $this->render('_formCreate', [
         'model' => $model,
     ]) ?>
-
-</div>
+</section>
+<!-- /.content -->

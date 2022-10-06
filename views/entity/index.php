@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="box-header">
           <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
           <div class="box-tools">
-            <button class="btn btn-success">+ Novo</button>
+            <a href="/entity/create"><button class="btn btn-success">+ Novo</button></a>
           </div>
         </div>
 
